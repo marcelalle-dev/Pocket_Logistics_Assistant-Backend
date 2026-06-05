@@ -4,34 +4,78 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")   // ✅ conservé depuis develop
+  url      = env("DATABASE_URL")
 }
 
-model User {
-  id         Int      @id @default(autoincrement())
-  email      String   @unique
-  password   String
-  name       String
-  role       Role     @default(AGENT)   // ✅ pas d'espace, syntaxe valide
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  parcels    Parcel[]
-  items      Item[]
-}
+// ─────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────
 
 enum Role {
   ADMIN
   AGENT
 }
 
+enum ParcelStatus {
+  PENDING
+  IN_TRANSIT
+  DELIVERED
+  CANCELLED
+}
+
+// ─────────────────────────────────────────
+// USERS
+// ─────────────────────────────────────────
+
+model User {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  password   String
+  name       String
+  role       Role     @default(AGENT)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  trips    Trip[]
+  parcels  Parcel[]
+  items    Item[]
+}
+
+// ─────────────────────────────────────────
+// TRIPS (conteneur logique d'un voyage)
+// ─────────────────────────────────────────
+
+model Trip {
+  id         Int       @id @default(autoincrement())
+  name       String
+  start_date DateTime
+  end_date   DateTime?
+  created_at DateTime  @default(now())
+
+  owner_id Int
+  owner    User      @relation(fields: [owner_id], references: [id])
+
+  items    Item[]
+  parcels  Parcel[]
+  expenses Expense[]
+}
+
+// ─────────────────────────────────────────
+// CATEGORIES
+// ─────────────────────────────────────────
+
 model Category {
-  id          Int     @id @default(autoincrement())
-  name        String  @unique
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
   description String?
   created_at  DateTime @default(now())
 
   items Item[]
 }
+
+// ─────────────────────────────────────────
+// ITEMS (marchandises)
+// ─────────────────────────────────────────
 
 model Item {
   id                        Int      @id @default(autoincrement())
@@ -49,8 +93,15 @@ model Item {
   category     Category      @relation(fields: [category_id], references: [id])
   owner_id     Int
   owner        User          @relation(fields: [owner_id], references: [id])
+  trip_id      Int?
+  trip         Trip?         @relation(fields: [trip_id], references: [id])
+
   parcel_items Parcel_Item[]
 }
+
+// ─────────────────────────────────────────
+// PARCELS (colis)
+// ─────────────────────────────────────────
 
 model Parcel {
   id            Int          @id @default(autoincrement())
@@ -62,17 +113,18 @@ model Parcel {
   created_at    DateTime     @default(now())
   updated_at    DateTime     @updatedAt
 
-  owner_id     Int
-  owner        User          @relation(fields: [owner_id], references: [id])
+  owner_id Int
+  owner    User @relation(fields: [owner_id], references: [id])
+  trip_id  Int?
+  trip     Trip? @relation(fields: [trip_id], references: [id])
+
   parcel_items Parcel_Item[]
+  expenses     Expense[]
 }
 
-enum ParcelStatus {
-  PENDING
-  IN_TRANSIT
-  DELIVERED
-  CANCELLED
-}
+// ─────────────────────────────────────────
+// PARCEL_ITEMS (relation M:N explicite)
+// ─────────────────────────────────────────
 
 model Parcel_Item {
   parcel_id         Int
@@ -85,6 +137,27 @@ model Parcel_Item {
 
   @@id([parcel_id, item_id])
 }
+
+// ─────────────────────────────────────────
+// EXPENSES (frais douanes / transport)
+// ─────────────────────────────────────────
+
+model Expense {
+  id           Int      @id @default(autoincrement())
+  amount_cfa   Decimal  @db.Decimal(10, 2)
+  expense_type String
+  description  String?
+  created_at   DateTime @default(now())
+
+  trip_id   Int
+  trip      Trip    @relation(fields: [trip_id], references: [id])
+  parcel_id Int?
+  parcel    Parcel? @relation(fields: [parcel_id], references: [id])
+}
+
+// ─────────────────────────────────────────
+// EXCHANGE RATES (taux de change)
+// ─────────────────────────────────────────
 
 model ExchangeRate {
   id            Int      @id @default(autoincrement())
