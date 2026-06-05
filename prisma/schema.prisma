@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL")   // ✅ conservé depuis develop
 }
 
 model User {
@@ -12,12 +12,11 @@ model User {
   email      String   @unique
   password   String
   name       String
-  role       Role     @default(AGENT)
+  role       Role     @default(AGENT)   // ✅ pas d'espace, syntaxe valide
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-
-  parcels Parcel[]
-  items   Item[]
+  parcels    Parcel[]
+  items      Item[]
 }
 
 enum Role {
