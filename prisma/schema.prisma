@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  password   String
+  name       String
+  role       Role     @default (AGENT)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  parcels Parcel[]
+  items   Item[]
+}
+
+enum Role {
+  ADMIN
+  AGENT
+}
+
+model Category {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+  created_at  DateTime @default(now())
+
+  items Item[]
+}
+
+model Item {
+  id                        Int      @id @default(autoincrement())
+  name                      String
+  description               String?
+  unit_price                Decimal  @db.Decimal(10, 2)
+  currency                  String   @default("XOF")
+  exchange_rate_at_purchase Decimal  @db.Decimal(10, 6)
+  photo_url                 String?
+  quantity                  Int      @default(1)
+  created_at                DateTime @default(now())
+  updated_at                DateTime @updatedAt
+
+  category_id  Int
+  category     Category      @relation(fields: [category_id], references: [id])
+  owner_id     Int
+  owner        User          @relation(fields: [owner_id], references: [id])
+  parcel_items Parcel_Item[]
+}
+
+model Parcel {
+  id            Int          @id @default(autoincrement())
+  tracking_code String       @unique
+  status        ParcelStatus @default(PENDING)
+  origin        String
+  destination   String
+  notes         String?
+  created_at    DateTime     @default(now())
+  updated_at    DateTime     @updatedAt
+
+  owner_id     Int
+  owner        User          @relation(fields: [owner_id], references: [id])
+  parcel_items Parcel_Item[]
+}
+
+enum ParcelStatus {
+  PENDING
+  IN_TRANSIT
+  DELIVERED
+  CANCELLED
+}
+
+model Parcel_Item {
+  parcel_id         Int
+  item_id           Int
+  quantity_assigned Int     @default(1)
+  landed_cost       Decimal @db.Decimal(10, 2)
+
+  parcel Parcel @relation(fields: [parcel_id], references: [id])
+  item   Item   @relation(fields: [item_id], references: [id])
+
+  @@id([parcel_id, item_id])
+}
+
+model ExchangeRate {
+  id            Int      @id @default(autoincrement())
+  from_currency String
+  to_currency   String
+  rate          Decimal  @db.Decimal(10, 6)
+  fetched_at    DateTime @default(now())
+
+  @@unique([from_currency, to_currency])
+}
