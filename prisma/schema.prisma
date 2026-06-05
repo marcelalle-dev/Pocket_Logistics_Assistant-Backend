@@ -90,11 +90,11 @@ model Item {
   updated_at                DateTime @updatedAt
 
   category_id  Int
-  category     Category    @relation(fields: [category_id], references: [id])
+  category     Category      @relation(fields: [category_id], references: [id])
   owner_id     Int
-  owner        User        @relation(fields: [owner_id], references: [id])
-  trip_id      Int
-  trip         Trip        @relation(fields: [trip_id], references: [id])
+  owner        User          @relation(fields: [owner_id], references: [id])
+  trip_id      Int?
+  trip         Trip?         @relation(fields: [trip_id], references: [id])
 
   parcel_items Parcel_Item[]
 }
@@ -115,8 +115,8 @@ model Parcel {
 
   owner_id Int
   owner    User @relation(fields: [owner_id], references: [id])
-  trip_id  Int
-  trip     Trip @relation(fields: [trip_id], references: [id])
+  trip_id  Int?
+  trip     Trip? @relation(fields: [trip_id], references: [id])
 
   parcel_items Parcel_Item[]
   expenses     Expense[]
