@@ -20,7 +20,9 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/')
       .expect(200)
-      .expect('Hello World!');
+      .expect(
+        "Hello World! c'est l'Assistant Logique de Poche, côté Backend, développé par Marcel ALLE",
+      );
   });
 
   afterEach(async () => {

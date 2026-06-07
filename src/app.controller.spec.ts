@@ -15,8 +15,10 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return the app welcome message', () => {
+      expect(appController.getHello()).toBe(
+        "Hello World! c'est l'Assistant Logique de Poche, côté Backend, développé par Marcel ALLE",
+      );
     });
   });
 });

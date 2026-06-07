@@ -1,21 +1,32 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import type { JwtModuleOptions } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { UsersModule } from '../users/users.module';
 import { PrismaModule } from '../prisma/prisma.module';
+import { UsersModule } from '../users/users.module';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
     UsersModule,
     PrismaModule,
     PassportModule,
-    JwtModule.register({
-      secret:
-        process.env.JWT_SECRET || 'your_secret_key_change_this_in_production',
-      signOptions: { expiresIn: '7d' },
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const expiresIn = configService.get<string>(
+          'JWT_EXPIRATION',
+          '7d',
+        ) as NonNullable<JwtModuleOptions['signOptions']>['expiresIn'];
+
+        return {
+          secret: configService.getOrThrow<string>('JWT_SECRET'),
+          signOptions: { expiresIn },
+        };
+      },
     }),
   ],
   providers: [AuthService, JwtStrategy],
