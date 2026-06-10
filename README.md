@@ -1,98 +1,245 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Pocket Logistics Assistant - Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend NestJS de l'application **Pocket Logistics Assistant**, un assistant de gestion logistique pour suivre des utilisateurs, voyages, articles, colis, frais et taux de change.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Le projet expose actuellement une base API fonctionnelle avec authentification JWT, gestion des utilisateurs et schema Prisma pret pour les modules metier logistiques.
 
-## Description
+## Etat actuel
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Authentification: inscription, connexion, profil connecte.
+- Autorisation: garde JWT disponible, garde par roles prepare.
+- Utilisateurs: liste des utilisateurs protegee par token.
+- Base de donnees: PostgreSQL avec Prisma.
+- Mode developpement: fallback local `dev_users.json` si la base PostgreSQL est inaccessible.
+- Modelisation metier deja presente dans Prisma: users, trips, categories, items, parcels, parcel_items, expenses, exchange_rates.
 
-## Project setup
+Les endpoints metier pour les voyages, colis, articles, frais et taux de change restent a implementer au-dessus du schema existant.
 
-```bash
-$ npm install
-```
+## Stack technique
 
-## Compile and run the project
+- Node.js
+- NestJS
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+- Passport JWT
+- bcryptjs
+- Jest / Supertest
+- Docker Compose
 
-```bash
-# development
-$ npm run start
+## Prerequis
 
-# watch mode
-$ npm run start:dev
+- Node.js installe
+- npm installe
+- Docker Desktop, pour lancer PostgreSQL et pgAdmin
 
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
+## Installation
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
 ```
 
-## Deployment
+## Configuration
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Creer un fichier `.env` a la racine du projet avec les variables suivantes:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+```env
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=pocket_logistics
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/pocket_logistics
+JWT_SECRET=change_me_in_dev
+JWT_EXPIRATION=1d
+PORT=3001
+```
+
+Ne pas utiliser la valeur `change_me_in_dev` en production.
+
+## Base de donnees
+
+Lancer PostgreSQL et pgAdmin:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+docker compose up -d
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Services disponibles:
 
-## Resources
+- PostgreSQL: `localhost:5432`
+- pgAdmin: `http://localhost:5050`
+- pgAdmin email: `admin@admin.com`
+- pgAdmin password: `admin`
 
-Check out a few resources that may come in handy when working with NestJS:
+Appliquer les migrations Prisma:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+npx prisma migrate dev
+```
 
-## Support
+Generer le client Prisma:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+npx prisma generate
+```
 
-## Stay in touch
+## Lancement
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Mode developpement:
 
-## License
+```bash
+npm run start:dev
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Mode classique:
+
+```bash
+npm run start
+```
+
+Build production:
+
+```bash
+npm run build
+```
+
+Lancement apres build:
+
+```bash
+npm run start:prod
+```
+
+Par defaut, l'API ecoute sur:
+
+```text
+http://localhost:3001
+```
+
+La variable `PORT` permet de changer ce port.
+
+## Routes API disponibles
+
+### Health / accueil
+
+```http
+GET /
+```
+
+Retourne un message de verification du backend.
+
+### Inscription
+
+```http
+POST /auth/register
+Content-Type: application/json
+```
+
+Body:
+
+```json
+{
+  "name": "Marcel",
+  "email": "marcel@example.com",
+  "password": "secret123"
+}
+```
+
+Le mot de passe doit contenir au moins 6 caracteres.
+
+### Connexion
+
+```http
+POST /auth/login
+Content-Type: application/json
+```
+
+Body:
+
+```json
+{
+  "email": "marcel@example.com",
+  "password": "secret123"
+}
+```
+
+Retourne un `accessToken` JWT et les informations publiques de l'utilisateur.
+
+### Profil connecte
+
+```http
+GET /auth/me
+Authorization: Bearer <accessToken>
+```
+
+Retourne le profil public de l'utilisateur connecte.
+
+### Liste des utilisateurs
+
+```http
+GET /users
+Authorization: Bearer <accessToken>
+```
+
+Retourne la liste des utilisateurs sans les mots de passe.
+
+## Structure du projet
+
+```text
+src/
+  auth/       Authentification, DTO, JWT, guards, decorators
+  prisma/     Module Prisma et service de connexion DB
+  users/      Gestion des utilisateurs
+  app.*       Module, controleur et service racine
+prisma/
+  schema.prisma
+  migrations/
+test/
+  app.e2e-spec.ts
+```
+
+## Tests et verification
+
+Tests unitaires:
+
+```bash
+npm test
+```
+
+Tests end-to-end:
+
+```bash
+npm run test:e2e
+```
+
+Compilation:
+
+```bash
+npm run build
+```
+
+Formatage:
+
+```bash
+npm run format
+```
+
+Lint:
+
+```bash
+npm run lint
+```
+
+## Notes de developpement
+
+- Les requetes entrantes passent par un `ValidationPipe` global avec `whitelist`, `forbidNonWhitelisted` et `transform`.
+- Les mots de passe sont hashes avec `bcryptjs`.
+- Les tokens JWT contiennent `id`, `email` et `role`.
+- Le service users peut basculer vers `dev_users.json` en developpement si Prisma/PostgreSQL n'est pas disponible.
+- Ce fallback fichier est utile pour avancer localement, mais ne doit pas remplacer PostgreSQL pour une version de production.
+
+## Prochaines etapes recommandees
+
+- Ajouter les modules `trips`, `items`, `parcels`, `expenses` et `exchange-rates`.
+- Proteger les routes sensibles avec `RolesGuard`.
+- Ajouter des tests sur `auth` et `users`.
+- Documenter l'API avec Swagger/OpenAPI.
+- Ajouter des seeds Prisma pour initialiser des donnees de demo.
