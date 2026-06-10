@@ -1,8 +1,13 @@
-// prisma.config.js
-module.exports = {
-  datasource: {
-    // On écrit directement la chaîne de connexion ici pour la CLI
-    // ou on s'assure qu'elle pointe bien sur l'URL de votre base Docker
-    url: "postgresql://postgres:postgres@localhost:5432/pocket_logistics_db?schema=public",
+require("dotenv/config");
+
+const { defineConfig } = require("prisma/config");
+
+module.exports = defineConfig({
+  schema: "prisma/schema.prisma",
+  migrations: {
+    path: "prisma/migrations",
   },
-}
+  datasource: {
+    url: process.env.DATABASE_URL,
+  },
+});
