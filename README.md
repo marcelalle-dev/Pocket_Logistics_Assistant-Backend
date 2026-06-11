@@ -13,7 +13,7 @@ Le projet expose actuellement une base API fonctionnelle avec authentification J
 - Mode developpement: fallback local `dev_users.json` si la base PostgreSQL est inaccessible.
 - Modelisation metier deja presente dans Prisma: users, trips, categories, items, parcels, parcel_items, expenses, exchange_rates.
 
-Les endpoints metier pour les voyages, colis, articles, frais et taux de change restent a implementer au-dessus du schema existant.
+Les endpoints metier pour les voyages, colis, articles, frais et taux de change sont maintenant implementes.
 
 ## Stack technique
 
@@ -180,6 +180,194 @@ Authorization: Bearer <accessToken>
 ```
 
 Retourne la liste des utilisateurs sans les mots de passe.
+
+### Articles (items)
+
+```http
+GET /items
+Authorization: Bearer <accessToken>
+```
+
+```http
+POST /items
+Content-Type: application/json
+Authorization: Bearer <accessToken>
+```
+
+```json
+{
+  "name": "Article 1",
+  "unit_price": 100.0,
+  "currency": "XOF",
+  "exchange_rate_at_purchase": 650.0,
+  "category_id": 1,
+  "quantity": 5,
+  "trip_id": 1
+}
+```
+
+```http
+GET /items/:id
+Authorization: Bearer <accessToken>
+```
+
+```http
+PATCH /items/:id
+Content-Type: application/json
+Authorization: Bearer <accessToken>
+```
+
+```http
+DELETE /items/:id
+Authorization: Bearer <accessToken>
+```
+
+### Colis (parcels)
+
+```http
+GET /parcels
+Authorization: Bearer <accessToken>
+```
+
+```http
+POST /parcels
+Content-Type: application/json
+Authorization: Bearer <accessToken>
+```
+
+```json
+{
+  "tracking_code": "COLIS-123",
+  "origin": "Ouagadougou",
+  "destination": "Abidjan",
+  "notes": "Livraison prioritaire",
+  "trip_id": 1
+}
+```
+
+```http
+GET /parcels/:id
+Authorization: Bearer <accessToken>
+```
+
+```http
+PATCH /parcels/:id
+Content-Type: application/json
+Authorization: Bearer <accessToken>
+```
+
+```http
+DELETE /parcels/:id
+Authorization: Bearer <accessToken>
+```
+
+### Articles dans un colis
+
+```http
+GET /parcels/:id/items
+Authorization: Bearer <accessToken>
+```
+
+```http
+POST /parcels/:id/items
+Content-Type: application/json
+Authorization: Bearer <accessToken>
+```
+
+```json
+{
+  "item_id": 1,
+  "quantity_assigned": 2,
+  "landed_cost": 250.0
+}
+```
+
+```http
+PATCH /parcels/:id/items/:itemId
+Content-Type: application/json
+Authorization: Bearer <accessToken>
+```
+
+```http
+DELETE /parcels/:id/items/:itemId
+Authorization: Bearer <accessToken>
+```
+
+### Frais (expenses)
+
+```http
+GET /expenses
+Authorization: Bearer <accessToken>
+```
+
+```http
+POST /expenses
+Content-Type: application/json
+Authorization: Bearer <accessToken>
+```
+
+```json
+{
+  "amount_cfa": 1500.0,
+  "expense_type": "Transport",
+  "description": "Frais douane",
+  "trip_id": 1,
+  "parcel_id": 1
+}
+```
+
+```http
+GET /expenses/:id
+Authorization: Bearer <accessToken>
+```
+
+```http
+PATCH /expenses/:id
+Content-Type: application/json
+Authorization: Bearer <accessToken>
+```
+
+```http
+DELETE /expenses/:id
+Authorization: Bearer <accessToken>
+```
+
+### Taux de change (exchange-rates)
+
+```http
+GET /exchange-rates
+Authorization: Bearer <accessToken>
+```
+
+```http
+POST /exchange-rates
+Content-Type: application/json
+Authorization: Bearer <accessToken>
+```
+
+```json
+{
+  "from_currency": "XOF",
+  "to_currency": "USD",
+  "rate": 0.0016
+}
+```
+
+```http
+GET /exchange-rates/:id
+Authorization: Bearer <accessToken>
+```
+
+```http
+PATCH /exchange-rates/:id
+Content-Type: application/json
+Authorization: Bearer <accessToken>
+```
+
+```http
+DELETE /exchange-rates/:id
+Authorization: Bearer <accessToken>
+```
 
 ## Structure du projet
 

@@ -3,10 +3,14 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { PrismaModule } from './prisma/prisma.module';
-import { UsersModule } from './users/users.module';
-import { TripsModule } from './trips/trips.module';
 import { CategoriesModule } from './categories/categories.module';
+import { ExchangeRatesModule } from './exchange-rates/exchange-rates.module';
+import { ExpensesModule } from './expenses/expenses.module';
+import { ItemsModule } from './items/items.module';
+import { ParcelsModule } from './parcels/parcels.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { TripsModule } from './trips/trips.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -19,6 +23,10 @@ import { CategoriesModule } from './categories/categories.module';
     UsersModule,
     TripsModule,
     CategoriesModule,
+    ItemsModule,
+    ParcelsModule,
+    ExpensesModule,
+    ExchangeRatesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
