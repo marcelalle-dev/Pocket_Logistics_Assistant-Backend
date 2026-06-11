@@ -11,6 +11,9 @@ import {
 } from '@nestjs/common';
 import { ExchangeRatesService } from './exchange-rates.service';
 import { JwtGuard } from '../auth/guards/jwt.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '@prisma/client';
 import { CreateExchangeRateDto } from './dto/create-exchange-rate.dto';
 import { UpdateExchangeRateDto } from './dto/update-exchange-rate.dto';
 
@@ -25,6 +28,8 @@ export class ExchangeRatesController {
   }
 
   @Post()
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   async create(@Body() dto: CreateExchangeRateDto) {
     return this.exchangeRatesService.create(dto);
   }

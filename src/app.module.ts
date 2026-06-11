@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ExchangeRatesModule } from './exchange-rates/exchange-rates.module';
+import { LandedCostsModule } from './landed-costs/landed-costs.module';
 import { ExpensesModule } from './expenses/expenses.module';
 import { ItemsModule } from './items/items.module';
 import { ParcelsModule } from './parcels/parcels.module';
@@ -27,6 +28,7 @@ import { UsersModule } from './users/users.module';
     ParcelsModule,
     ExpensesModule,
     ExchangeRatesModule,
+    LandedCostsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

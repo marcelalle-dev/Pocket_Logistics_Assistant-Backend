@@ -47,10 +47,10 @@ Creer un fichier `.env` a la racine du projet avec les variables suivantes:
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
 POSTGRES_DB=pocket_logistics
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/pocket_logistics
+DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5433/pocket_logistics?schema=public
 JWT_SECRET=change_me_in_dev
 JWT_EXPIRATION=1d
-PORT=3001
+PORT=3000
 ```
 
 Ne pas utiliser la valeur `change_me_in_dev` en production.
@@ -65,7 +65,7 @@ docker compose up -d
 
 Services disponibles:
 
-- PostgreSQL: `localhost:5432`
+- PostgreSQL: `localhost:5433`
 - pgAdmin: `http://localhost:5050`
 - pgAdmin email: `admin@admin.com`
 - pgAdmin password: `admin`
